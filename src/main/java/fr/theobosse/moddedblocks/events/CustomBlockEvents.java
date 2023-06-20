@@ -3,6 +3,7 @@ package fr.theobosse.moddedblocks.events;
 import com.destroystokyo.paper.ParticleBuilder;
 import fr.theobosse.moddedblocks.ModdedBlocks;
 import fr.theobosse.moddedblocks.api.blocks.BlockPersistentData;
+import fr.theobosse.moddedblocks.api.blocks.CustomBlock;
 import fr.theobosse.moddedblocks.api.events.PersistentDataBlockDestroyedEvent;
 import fr.theobosse.moddedblocks.managers.DigManager;
 import org.bukkit.*;
@@ -43,7 +44,7 @@ public class CustomBlockEvents implements Listener {
         if (meta == null || !meta.hasCustomModelData()) return;
         int configId = meta.getCustomModelData() - 1000;
         if (!item.getType().equals(Material.STONE) || configId < 0 || configId > 159) return;
-        fr.theobosse.moddedblocks.api.blocks.CustomBlock customBlock = fr.theobosse.moddedblocks.api.blocks.CustomBlock.getCustomBlock(configId);
+        CustomBlock customBlock = CustomBlock.getCustomBlock(configId);
         if (customBlock == null) return;
         MultipleFacing blockData = customBlock.getBlockData();
         block.setType(blockData.getMaterial(), false);
@@ -60,8 +61,8 @@ public class CustomBlockEvents implements Listener {
         Player player = event.getPlayer();
         if (player.getGameMode().equals(org.bukkit.GameMode.CREATIVE)) return;
         Block block = event.getBlock();
-        if (!fr.theobosse.moddedblocks.api.blocks.CustomBlock.isMushroomBlock(block)) return;
-        fr.theobosse.moddedblocks.api.blocks.CustomBlock customBlock = fr.theobosse.moddedblocks.api.blocks.CustomBlock.getCustomBlock(block);
+        if (!CustomBlock.isMushroomBlock(block)) return;
+        CustomBlock customBlock = CustomBlock.getCustomBlock(block);
         if (customBlock == null) return;
         DigManager.CustomBlockInfo info = tempDiggers.get(player);
         DigManager.CustomBlockInfo info2 = DigManager.getDigger(player);
@@ -132,13 +133,13 @@ public class CustomBlockEvents implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onMushroomPlaced(BlockPlaceEvent event) {
         Block block = event.getBlockPlaced();
-        if (!fr.theobosse.moddedblocks.api.blocks.CustomBlock.isMushroomBlock(block) || fr.theobosse.moddedblocks.api.blocks.CustomBlock.isCustomBlock(block)) return;
+        if (!CustomBlock.isMushroomBlock(block) || CustomBlock.isCustomBlock(block)) return;
         block.setType(block.getType(), false);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onMushroomUpdate(BlockPhysicsEvent event) {
-        if (fr.theobosse.moddedblocks.api.blocks.CustomBlock.isMushroomBlock(event.getBlock())) {
+        if (CustomBlock.isMushroomBlock(event.getBlock())) {
             event.setCancelled(true);
             event.getBlock().getState().update(true, false);
         }
@@ -148,7 +149,7 @@ public class CustomBlockEvents implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         Block block = event.getBlock();
-        if (player.getGameMode().equals(org.bukkit.GameMode.CREATIVE) || !fr.theobosse.moddedblocks.api.blocks.CustomBlock.isCustomBlock(block)) return;
+        if (player.getGameMode().equals(org.bukkit.GameMode.CREATIVE) || !CustomBlock.isCustomBlock(block)) return;
         DigManager.CustomBlockInfo info = DigManager.getDigger(player);
         if (info != null) {
             if (info.getBreakTime() == info.getInitialBreakTime()) {
@@ -183,9 +184,8 @@ public class CustomBlockEvents implements Listener {
     }
 
     private boolean customBlockExplode(Block block, Location loc) {
-        fr.theobosse.moddedblocks.api.blocks.CustomBlock customBlock = fr.theobosse.moddedblocks.api.blocks.CustomBlock.getCustomBlock(block);
-        if (customBlock == null || loc.distance(block.getLocation()) > 10 - customBlock.getData().getBlastResistance())
-            return false;
+        CustomBlock customBlock = CustomBlock.getCustomBlock(block);
+        if (customBlock == null) return false;
         block.setType(Material.AIR, false);
         customBlock.getData().getDrops().forEach(drop -> block.getWorld().dropItemNaturally(block.getLocation(), drop));
         return true;

@@ -1,5 +1,6 @@
 package fr.theobosse.moddedblocks;
 
+import fr.theobosse.moddedblocks.api.blocks.CustomBlock;
 import fr.theobosse.moddedblocks.commands.KrashBlockCommand;
 import fr.theobosse.moddedblocks.events.*;
 import fr.theobosse.moddedblocks.tools.Configs;
@@ -31,7 +32,7 @@ public final class ModdedBlocks extends JavaPlugin {
 
         Objects.requireNonNull(getCommand("block")).setExecutor(new KrashBlockCommand());
 
-        fr.theobosse.moddedblocks.api.blocks.CustomBlock.loadCustomBlocks();
+        CustomBlock.loadCustomBlocks();
     }
 
     @Override
