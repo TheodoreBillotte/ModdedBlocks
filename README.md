@@ -156,8 +156,7 @@ id:
       - !world_nether
     # Generate the block in the world only if the block is bordering with a block in the list (add ! before the block to exclude it)
     bordering:
-      - STONE
-      - DIRT
+      - AIR
 ```
 
 #### List of tool types
