@@ -1,7 +1,7 @@
 package fr.theobosse.moddedblocks.events;
 
 import fr.theobosse.moddedblocks.api.blocks.BlockPersistentData;
-import fr.theobosse.moddedblocks.api.events.ModdedBlockMovedEvent;
+import fr.theobosse.moddedblocks.api.events.PersistentDataBlockMovedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -34,7 +34,7 @@ public class BlockMoved implements Listener {
             Block newBlock = block.getRelative(direction);
             BlockPersistentData newData = new BlockPersistentData(newBlock);
 
-            ModdedBlockMovedEvent movedEvent = new ModdedBlockMovedEvent(block, direction);
+            PersistentDataBlockMovedEvent movedEvent = new PersistentDataBlockMovedEvent(block, direction);
             Bukkit.getPluginManager().callEvent(movedEvent);
             event.setCancelled(movedEvent.isCancelled());
             if (!event.isCancelled()) {

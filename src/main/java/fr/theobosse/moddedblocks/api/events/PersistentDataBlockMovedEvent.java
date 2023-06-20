@@ -6,11 +6,11 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockPistonEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class ModdedBlockMovedEvent extends BlockPistonEvent {
+public class PersistentDataBlockMovedEvent extends BlockPistonEvent {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
-    public ModdedBlockMovedEvent(@NotNull Block block, @NotNull BlockFace direction) {
+    public PersistentDataBlockMovedEvent(@NotNull Block block, @NotNull BlockFace direction) {
         super(block, direction);
     }
 

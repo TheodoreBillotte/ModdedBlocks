@@ -3,7 +3,7 @@ package fr.theobosse.moddedblocks.events;
 import com.destroystokyo.paper.ParticleBuilder;
 import fr.theobosse.moddedblocks.ModdedBlocks;
 import fr.theobosse.moddedblocks.api.blocks.BlockPersistentData;
-import fr.theobosse.moddedblocks.api.events.ModdedBlockDestroyedEvent;
+import fr.theobosse.moddedblocks.api.events.PersistentDataBlockDestroyedEvent;
 import fr.theobosse.moddedblocks.managers.DigManager;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -94,7 +94,7 @@ public class CustomBlockEvents implements Listener {
         info.removeBreakTime(info.getSpeedModifier());
         info.playBreakAnimation();
         if (info.getBreakTime() <= 0) {
-            ModdedBlockDestroyedEvent destroyEvent = new ModdedBlockDestroyedEvent(info.getBlock());
+            PersistentDataBlockDestroyedEvent destroyEvent = new PersistentDataBlockDestroyedEvent(info.getBlock());
             Bukkit.getPluginManager().callEvent(destroyEvent);
             if (destroyEvent.isCancelled()) return;
             BlockPersistentData persistent = new BlockPersistentData(info.getBlock());

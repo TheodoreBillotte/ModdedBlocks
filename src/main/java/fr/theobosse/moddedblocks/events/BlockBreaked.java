@@ -2,7 +2,7 @@ package fr.theobosse.moddedblocks.events;
 
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import fr.theobosse.moddedblocks.api.blocks.BlockPersistentData;
-import fr.theobosse.moddedblocks.api.events.ModdedBlockDestroyedEvent;
+import fr.theobosse.moddedblocks.api.events.PersistentDataBlockDestroyedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -67,7 +67,7 @@ public class BlockBreaked implements Listener {
     }
 
     private void destroyBlockFunction(Block block, Cancellable event) {
-        ModdedBlockDestroyedEvent destroyEvent = new ModdedBlockDestroyedEvent(block);
+        PersistentDataBlockDestroyedEvent destroyEvent = new PersistentDataBlockDestroyedEvent(block);
         Bukkit.getPluginManager().callEvent(destroyEvent);
         if (destroyEvent.isCancelled()) {
             event.setCancelled(true);

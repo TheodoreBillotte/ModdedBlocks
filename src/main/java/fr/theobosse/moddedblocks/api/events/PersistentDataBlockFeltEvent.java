@@ -7,13 +7,13 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class ModdedBlockFelt extends BlockEvent {
+public class PersistentDataBlockFeltEvent extends BlockEvent {
 
     private static final HandlerList HANDLERS = new HandlerList();
     private final FallingBlock fallingBlock;
     private final Location previousLocation;
 
-    public ModdedBlockFelt(@NotNull Block theBlock, FallingBlock fallingBlock, Location previousLocation) {
+    public PersistentDataBlockFeltEvent(@NotNull Block theBlock, FallingBlock fallingBlock, Location previousLocation) {
         super(theBlock);
         this.fallingBlock = fallingBlock;
         this.previousLocation = previousLocation;

@@ -1,8 +1,8 @@
 package fr.theobosse.moddedblocks.events;
 
 import fr.theobosse.moddedblocks.api.blocks.BlockPersistentData;
-import fr.theobosse.moddedblocks.api.events.ModdedBlockFelt;
-import fr.theobosse.moddedblocks.api.events.ModdedBlockStartFalling;
+import fr.theobosse.moddedblocks.api.events.PersistentDataBlockFeltEvent;
+import fr.theobosse.moddedblocks.api.events.PersistentDataBlockStartFallingEvent;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
@@ -27,7 +27,7 @@ public class BlockFall implements Listener {
         if (data.getValues() == null) return;
         FALLING_BLOCKS_VALUES.put(fb.getUniqueId(), new fr.theobosse.moddedblocks.tools.BlockFall(data.getValues(), block.getLocation()));
         data.clear();
-        new ModdedBlockStartFalling(block, fb).callEvent();
+        new PersistentDataBlockStartFallingEvent(block, fb).callEvent();
     }
 
     @EventHandler
@@ -40,7 +40,7 @@ public class BlockFall implements Listener {
         BlockPersistentData data = new BlockPersistentData(event.getBlock());
         data.setValues(bf.getValues());
         FALLING_BLOCKS_VALUES.remove(fb.getUniqueId());
-        new ModdedBlockFelt(event.getBlock(), fb, bf.getLocation()).callEvent();
+        new PersistentDataBlockFeltEvent(event.getBlock(), fb, bf.getLocation()).callEvent();
     }
 
 }

@@ -6,12 +6,12 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class ModdedBlockDestroyedEvent extends BlockEvent implements Cancellable {
+public class PersistentDataBlockDestroyedEvent extends BlockEvent implements Cancellable {
 
     private boolean cancelled = false;
     private static final HandlerList HANDLERS = new HandlerList();
 
-    public ModdedBlockDestroyedEvent(@NotNull Block theBlock) {
+    public PersistentDataBlockDestroyedEvent(@NotNull Block theBlock) {
         super(theBlock);
     }
 
