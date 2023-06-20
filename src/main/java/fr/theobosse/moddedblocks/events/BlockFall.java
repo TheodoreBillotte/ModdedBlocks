@@ -44,7 +44,7 @@ public class BlockFall implements Listener {
         new PersistentDataBlockFeltEvent(event.getBlock(), fb, bf.getLocation()).callEvent();
     }
 
-    public class FallingBlockValues {
+    private static class FallingBlockValues {
 
         private final Map<String, Object> values;
         private final Location location;
