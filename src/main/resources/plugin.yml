@@ -1,4 +1,4 @@
-name: Modded Blocks
+name: ModdedBlocks
 version: '${project.version}'
 main: fr.theobosse.moddedblocks.ModdedBlocks
 api-version: 1.19
