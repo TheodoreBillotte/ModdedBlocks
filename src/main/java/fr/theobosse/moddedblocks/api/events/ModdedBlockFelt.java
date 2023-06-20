@@ -1,4 +1,4 @@
-package fr.theobosse.krash.api.events;
+package fr.theobosse.moddedblocks.api.events;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;

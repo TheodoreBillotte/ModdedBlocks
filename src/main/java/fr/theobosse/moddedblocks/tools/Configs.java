@@ -1,6 +1,6 @@
-package fr.theobosse.krash.tools;
+package fr.theobosse.moddedblocks.tools;
 
-import fr.theobosse.krash.ModdedBlocks;
+import fr.theobosse.moddedblocks.ModdedBlocks;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;

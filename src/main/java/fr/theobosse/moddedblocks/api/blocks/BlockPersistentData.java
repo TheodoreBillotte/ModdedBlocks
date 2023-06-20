@@ -1,6 +1,6 @@
-package fr.theobosse.krash.api.blocks;
+package fr.theobosse.moddedblocks.api.blocks;
 
-import fr.theobosse.krash.tools.Configs;
+import fr.theobosse.moddedblocks.tools.Configs;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;

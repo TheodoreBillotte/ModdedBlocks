@@ -1,8 +1,8 @@
-package fr.theobosse.krash.events;
+package fr.theobosse.moddedblocks.events;
 
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
-import fr.theobosse.krash.api.blocks.BlockPersistentData;
-import fr.theobosse.krash.api.events.ModdedBlockDestroyedEvent;
+import fr.theobosse.moddedblocks.api.blocks.BlockPersistentData;
+import fr.theobosse.moddedblocks.api.events.ModdedBlockDestroyedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;

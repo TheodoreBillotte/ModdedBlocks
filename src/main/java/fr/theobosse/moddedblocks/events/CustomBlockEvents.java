@@ -1,10 +1,10 @@
-package fr.theobosse.krash.events;
+package fr.theobosse.moddedblocks.events;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import fr.theobosse.krash.ModdedBlocks;
-import fr.theobosse.krash.api.blocks.BlockPersistentData;
-import fr.theobosse.krash.api.events.ModdedBlockDestroyedEvent;
-import fr.theobosse.krash.managers.DigManager;
+import fr.theobosse.moddedblocks.ModdedBlocks;
+import fr.theobosse.moddedblocks.api.blocks.BlockPersistentData;
+import fr.theobosse.moddedblocks.api.events.ModdedBlockDestroyedEvent;
+import fr.theobosse.moddedblocks.managers.DigManager;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -43,7 +43,7 @@ public class CustomBlockEvents implements Listener {
         if (meta == null || !meta.hasCustomModelData()) return;
         int configId = meta.getCustomModelData() - 1000;
         if (!item.getType().equals(Material.STONE) || configId < 0 || configId > 159) return;
-        fr.theobosse.krash.api.blocks.CustomBlock customBlock = fr.theobosse.krash.api.blocks.CustomBlock.getCustomBlock(configId);
+        fr.theobosse.moddedblocks.api.blocks.CustomBlock customBlock = fr.theobosse.moddedblocks.api.blocks.CustomBlock.getCustomBlock(configId);
         if (customBlock == null) return;
         MultipleFacing blockData = customBlock.getBlockData();
         block.setType(blockData.getMaterial(), false);
@@ -60,8 +60,8 @@ public class CustomBlockEvents implements Listener {
         Player player = event.getPlayer();
         if (player.getGameMode().equals(org.bukkit.GameMode.CREATIVE)) return;
         Block block = event.getBlock();
-        if (!fr.theobosse.krash.api.blocks.CustomBlock.isMushroomBlock(block)) return;
-        fr.theobosse.krash.api.blocks.CustomBlock customBlock = fr.theobosse.krash.api.blocks.CustomBlock.getCustomBlock(block);
+        if (!fr.theobosse.moddedblocks.api.blocks.CustomBlock.isMushroomBlock(block)) return;
+        fr.theobosse.moddedblocks.api.blocks.CustomBlock customBlock = fr.theobosse.moddedblocks.api.blocks.CustomBlock.getCustomBlock(block);
         if (customBlock == null) return;
         DigManager.CustomBlockInfo info = tempDiggers.get(player);
         DigManager.CustomBlockInfo info2 = DigManager.getDigger(player);
@@ -132,13 +132,13 @@ public class CustomBlockEvents implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onMushroomPlaced(BlockPlaceEvent event) {
         Block block = event.getBlockPlaced();
-        if (!fr.theobosse.krash.api.blocks.CustomBlock.isMushroomBlock(block) || fr.theobosse.krash.api.blocks.CustomBlock.isCustomBlock(block)) return;
+        if (!fr.theobosse.moddedblocks.api.blocks.CustomBlock.isMushroomBlock(block) || fr.theobosse.moddedblocks.api.blocks.CustomBlock.isCustomBlock(block)) return;
         block.setType(block.getType(), false);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onMushroomUpdate(BlockPhysicsEvent event) {
-        if (fr.theobosse.krash.api.blocks.CustomBlock.isMushroomBlock(event.getBlock())) {
+        if (fr.theobosse.moddedblocks.api.blocks.CustomBlock.isMushroomBlock(event.getBlock())) {
             event.setCancelled(true);
             event.getBlock().getState().update(true, false);
         }
@@ -148,7 +148,7 @@ public class CustomBlockEvents implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         Block block = event.getBlock();
-        if (player.getGameMode().equals(org.bukkit.GameMode.CREATIVE) || !fr.theobosse.krash.api.blocks.CustomBlock.isCustomBlock(block)) return;
+        if (player.getGameMode().equals(org.bukkit.GameMode.CREATIVE) || !fr.theobosse.moddedblocks.api.blocks.CustomBlock.isCustomBlock(block)) return;
         DigManager.CustomBlockInfo info = DigManager.getDigger(player);
         if (info != null) {
             if (info.getBreakTime() == info.getInitialBreakTime()) {
@@ -183,7 +183,7 @@ public class CustomBlockEvents implements Listener {
     }
 
     private boolean customBlockExplode(Block block, Location loc) {
-        fr.theobosse.krash.api.blocks.CustomBlock customBlock = fr.theobosse.krash.api.blocks.CustomBlock.getCustomBlock(block);
+        fr.theobosse.moddedblocks.api.blocks.CustomBlock customBlock = fr.theobosse.moddedblocks.api.blocks.CustomBlock.getCustomBlock(block);
         if (customBlock == null || loc.distance(block.getLocation()) > 10 - customBlock.getData().getBlastResistance())
             return false;
         block.setType(Material.AIR, false);

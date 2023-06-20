@@ -1,7 +1,7 @@
-package fr.theobosse.krash.events;
+package fr.theobosse.moddedblocks.events;
 
-import fr.theobosse.krash.api.blocks.BlockPersistentData;
-import fr.theobosse.krash.api.events.ModdedBlockPlaceEvent;
+import fr.theobosse.moddedblocks.api.blocks.BlockPersistentData;
+import fr.theobosse.moddedblocks.api.events.ModdedBlockPlaceEvent;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

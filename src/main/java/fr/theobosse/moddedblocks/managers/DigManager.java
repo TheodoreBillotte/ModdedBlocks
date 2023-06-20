@@ -1,10 +1,10 @@
-package fr.theobosse.krash.managers;
+package fr.theobosse.moddedblocks.managers;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.BlockPosition;
-import fr.theobosse.krash.api.blocks.CustomBlock;
+import fr.theobosse.moddedblocks.api.blocks.CustomBlock;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;

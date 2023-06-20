@@ -1,8 +1,7 @@
-package fr.theobosse.krash.tools;
+package fr.theobosse.moddedblocks.tools;
 
 import org.bukkit.Location;
 
-import javax.swing.*;
 import java.util.Map;
 
 public class BlockFall {

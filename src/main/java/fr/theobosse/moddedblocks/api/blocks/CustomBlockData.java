@@ -1,6 +1,6 @@
-package fr.theobosse.krash.api.blocks;
+package fr.theobosse.moddedblocks.api.blocks;
 
-import fr.theobosse.krash.managers.DigManager;
+import fr.theobosse.moddedblocks.managers.DigManager;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.data.BlockData;

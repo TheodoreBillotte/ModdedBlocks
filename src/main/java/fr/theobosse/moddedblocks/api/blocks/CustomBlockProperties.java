@@ -1,4 +1,4 @@
-package fr.theobosse.krash.api.blocks;
+package fr.theobosse.moddedblocks.api.blocks;
 
 import org.bukkit.configuration.ConfigurationSection;
 

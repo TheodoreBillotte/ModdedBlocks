@@ -1,6 +1,6 @@
-package fr.theobosse.krash.commands;
+package fr.theobosse.moddedblocks.commands;
 
-import fr.theobosse.krash.ModdedBlocks;
+import fr.theobosse.moddedblocks.ModdedBlocks;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
