@@ -1,0 +1,46 @@
+1:
+  name: Krash Test
+  lore:
+    - '§7This is a Krash Test'
+  tools:
+    type: PICKAXE
+    hardness: 2.0
+    harvest-level: 1
+    blast-resistance: 100.0
+  loots:
+    items:
+      DIAMOND: 1%50
+      GOLD_INGOT: 1%100
+    xp: 1~10
+  properties:
+    breakable: false
+    pushable: true
+    gravity: true
+    explosive: true
+    flammable: true
+    fortunate: true
+    silk-touchable: true
+    loot-need-tool: true
+  data:
+    field-name1: data
+    field-name2: 1
+    field-name3: 1.0
+  effects:
+    break-particle: STONE
+    break-sound: BLOCK_STONE_BREAK
+  generation:
+    replace:
+      - STONE
+    chunk-chance: 0.7
+    depth: 0~16
+    vein-size: 1~10
+    vein-count: 1~10
+    slime-chunk-only: true
+    biomes:
+      - PLAINS
+      - DESERT
+    worlds:
+      - world
+    bordering:
+        - STONE
+        - DIRT

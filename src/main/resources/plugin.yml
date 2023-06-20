@@ -1,0 +1,11 @@
+name: Modded Blocks
+version: '${project.version}'
+main: fr.theobosse.krash.Krash
+api-version: 1.19
+authors: [Theobosse]
+description: This plugin is used to add custom blocks to Minecraft with a lot of properties
+depend: [ ProtocolLib ]
+commands:
+  block:
+    description: give a custom block
+    usage: /block <id>
