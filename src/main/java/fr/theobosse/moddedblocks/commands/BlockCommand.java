@@ -1,19 +1,14 @@
 package fr.theobosse.moddedblocks.commands;
 
-import fr.theobosse.moddedblocks.ModdedBlocks;
+import fr.theobosse.moddedblocks.api.blocks.CustomBlock;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-public class KrashBlockCommand implements CommandExecutor {
+public class BlockCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
@@ -30,14 +25,7 @@ public class KrashBlockCommand implements CommandExecutor {
                 return false;
             }
         }
-        ItemStack item = new ItemStack(material);
-        ItemMeta meta = item.getItemMeta();
-        meta.setCustomModelData(1000 + model);
-        PersistentDataContainer container = meta.getPersistentDataContainer();
-        meta.setDisplayName("§6§lKrash Block");
-        container.set(new NamespacedKey(ModdedBlocks.getInstance(), "text"), PersistentDataType.STRING, "HELLO");
-        item.setItemMeta(meta);
-        player.getInventory().addItem(item);
+        player.getInventory().addItem(CustomBlock.getCustomBlock(model).getItem());
         return true;
     }
 

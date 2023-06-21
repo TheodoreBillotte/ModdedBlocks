@@ -1,7 +1,7 @@
 package fr.theobosse.moddedblocks;
 
 import fr.theobosse.moddedblocks.api.blocks.CustomBlock;
-import fr.theobosse.moddedblocks.commands.KrashBlockCommand;
+import fr.theobosse.moddedblocks.commands.BlockCommand;
 import fr.theobosse.moddedblocks.events.*;
 import fr.theobosse.moddedblocks.tools.Configs;
 import org.bukkit.plugin.PluginManager;
@@ -30,7 +30,7 @@ public final class ModdedBlocks extends JavaPlugin {
         pm.registerEvents(new BlockFall(), this);
         pm.registerEvents(new CustomBlockEvents(), this);
 
-        Objects.requireNonNull(getCommand("block")).setExecutor(new KrashBlockCommand());
+        Objects.requireNonNull(getCommand("block")).setExecutor(new BlockCommand());
 
         CustomBlock.loadCustomBlocks();
     }
