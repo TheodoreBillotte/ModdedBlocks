@@ -15,8 +15,6 @@ public final class ModdedBlocks extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getServer().getLogger().info("KrashAPI is now enabled");
-
         instance = this;
         PluginManager pm = getServer().getPluginManager();
         Configs.register("blocks-data");
@@ -29,15 +27,11 @@ public final class ModdedBlocks extends JavaPlugin {
         pm.registerEvents(new BlockMoved(), this);
         pm.registerEvents(new BlockFall(), this);
         pm.registerEvents(new CustomBlockEvents(), this);
+        pm.registerEvents(new GeneratorEvents(), this);
 
         Objects.requireNonNull(getCommand("block")).setExecutor(new BlockCommand());
 
         CustomBlock.loadCustomBlocks();
-    }
-
-    @Override
-    public void onDisable() {
-        getServer().getLogger().info("KrashAPI is now disabled");
     }
 
     public static ModdedBlocks getInstance() {
