@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+/**
+ * A class to manage custom blocks generation.
+ */
 public class CustomBlockGenerator {
 
     private final List<Material> replaceable = new ArrayList<>();
@@ -100,62 +103,107 @@ public class CustomBlockGenerator {
         }
     }
 
+    /**
+     * @return the chance of a chunk to be generated with this block.
+     */
     public double getChunkChance() {
         return chunkChance;
     }
 
+    /**
+     * @return the maximum depth of the block.
+     */
     public int getDepthMax() {
         return depthMax;
     }
 
+    /**
+     * @return the minimum depth of the block.
+     */
     public int getDepthMin() {
         return depthMin;
     }
 
+    /**
+     * @return the maximum amount of veins per chunk.
+     */
     public int getVeinCountMax() {
         return veinCountMax;
     }
 
+    /**
+     * @return the minimum amount of veins per chunk.
+     */
     public int getVeinCountMin() {
         return veinCountMin;
     }
 
+    /**
+     * @return the maximum size of a vein.
+     */
     public int getVeinSizeMax() {
         return veinSizeMax;
     }
 
+    /**
+     * @return the minimum size of a vein.
+     */
     public int getVeinSizeMin() {
         return veinSizeMin;
     }
 
+    /**
+     * @return the list of biomes where the block can't be generated.
+     */
     public List<Biome> getBiomeBlacklist() {
         return biomeBlacklist;
     }
 
+    /**
+     * @return the list of biomes where the block can be generated.
+     */
     public List<Biome> getBiomeWhitelist() {
         return biomeWhitelist;
     }
 
+    /**
+     * @return the list of blocks that can't border the block.
+     */
     public List<Material> getBorderingBlacklist() {
         return borderingBlacklist;
     }
 
+    /**
+     * @return the list of blocks that have to border the block.
+     */
     public List<Material> getBorderingWhitelist() {
         return borderingWhitelist;
     }
 
+    /**
+     * @return the list of blocks that can be replaced by the block.
+     */
     public List<Material> getReplaceable() {
         return replaceable;
     }
 
+    /**
+     * @return the list of worlds where the block can't be generated.
+     */
     public List<String> getWorldBlacklist() {
         return worldBlacklist;
     }
 
+    /**
+     * @return the list of worlds where the block can be generated.
+     */
     public List<String> getWorldWhitelist() {
         return worldWhitelist;
     }
 
+    /**
+     * @return the list of worlds where the block can be generated.
+     */
     public List<String> getAllowedWorlds() {
         if (!worldWhitelist.isEmpty())
             return worldWhitelist.stream().filter(world -> !worldBlacklist.contains(world)).collect(Collectors.toList());
@@ -164,28 +212,48 @@ public class CustomBlockGenerator {
         return worlds;
     }
 
+    /**
+     * @return true if the block can be generated in slime chunks.
+     */
     public boolean isSlimeChunk() {
         return slimeChunk;
     }
 
+    /**
+     * @param world the world to check.
+     * @return true if the block can be generated in the given world.
+     */
     public boolean isWorldAllowed(String world) {
         if (worldBlacklist.contains(world)) return false;
         if (worldWhitelist.isEmpty()) return true;
         return worldWhitelist.contains(world);
     }
 
+    /**
+     * @param biome the biome to check.
+     * @return true if the block can be generated in the given biome.
+     */
     public boolean isBiomeAllowed(Biome biome) {
         if (biomeBlacklist.contains(biome)) return false;
         if (biomeWhitelist.isEmpty()) return true;
         return biomeWhitelist.contains(biome);
     }
 
+    /**
+     * @param material the material of the block to check.
+     * @return true if the material is in the bordering whitelist or if the whitelist is empty.
+     */
     public boolean isBorderingAllowed(Material material) {
         if (borderingBlacklist.contains(material)) return false;
         if (borderingWhitelist.isEmpty()) return true;
         return borderingWhitelist.contains(material);
     }
 
+    /**
+     * @param block the block to check.
+     * @param region the region where the block is.
+     * @return true if the block is allowed to border the given block.
+     */
     public boolean isBorderingAllowed(Block block, LimitedRegion region) {
         for (BlockFace face : faces) {
             int chunkX = block.getX() % 16;
@@ -200,29 +268,54 @@ public class CustomBlockGenerator {
         return false;
     }
 
+    /**
+     * @param material the material of the block to check.
+     * @return true if the block can be replaced by the given material.
+     */
     public boolean isReplaceable(Material material) {
         return replaceable.contains(material) || replaceable.isEmpty();
     }
 
+    /**
+     * @param random the random to use.
+     * @return calculate the size of the vein.
+     */
     public int getVeinSize(Random random) {
         if (veinSizeMax == -1) return veinSizeMin;
         return random.nextInt(veinSizeMax - veinSizeMin + 1) + veinSizeMin;
     }
 
+    /**
+     * @param random the random to use.
+     * @return calculate the amount of veins per chunk.
+     */
     public int getVeinCount(Random random) {
         if (veinCountMax == -1) return veinCountMin;
         return random.nextInt(veinCountMax - veinCountMin + 1) + veinCountMin;
     }
 
+    /**
+     * @param random the random to use.
+     * @return calculate the depth of the vein.
+     */
     public int getDepth(Random random) {
         if (depthMax == -1) return depthMin;
         return random.nextInt(depthMax - depthMin + 1) + depthMin;
     }
 
+    /**
+     * @param random the random to use.
+     * @return true if the block can be generated in a chunk.
+     */
     public boolean canGenerateInChunk(Random random) {
         return random.nextDouble() <= chunkChance;
     }
 
+    /**
+     * @param location the location to check.
+     * @param region the region where the block is.
+     * @return true if the block can be generated at the given location.
+     */
     public boolean canGenerateAtLocation(Location location, LimitedRegion region) {
         if (location == null) return false;
         if (!isBiomeAllowed(location.getBlock().getBiome())) return false;
