@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPistonEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
@@ -23,7 +24,7 @@ public class BlockMoved implements Listener {
         HashMap<BlockPersistentData, BlockPersistentData> movedBlocks = new HashMap<>();
         List<BlockPersistentData> removedData = new ArrayList<>();
         boolean clearValue = true;
-        int i = 0;
+        if (blocks.isEmpty() || event.isCancelled()) return;
 
         for (Block block : blocks) {
             BlockPersistentData oldData = new BlockPersistentData(block);
@@ -52,12 +53,12 @@ public class BlockMoved implements Listener {
             data.clear();
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPistonExtend(BlockPistonExtendEvent event) {
         pistonMoveKrashBLock(event, event.getBlocks());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPistonRetract(BlockPistonRetractEvent event) {
         pistonMoveKrashBLock(event, event.getBlocks());
     }
