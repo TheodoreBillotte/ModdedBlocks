@@ -25,7 +25,12 @@ public class BlockCommand implements CommandExecutor {
                 return false;
             }
         }
-        player.getInventory().addItem(CustomBlock.getCustomBlock(model).getItem());
+        CustomBlock block = CustomBlock.getCustomBlock(model);
+        if (block == null) {
+            player.sendPlainMessage("§cUnknown Id");
+            return false;
+        }
+        player.getInventory().addItem(block.getItem());
         return true;
     }
 
