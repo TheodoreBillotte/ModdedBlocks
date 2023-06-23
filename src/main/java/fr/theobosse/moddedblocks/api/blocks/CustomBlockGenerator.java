@@ -205,14 +205,17 @@ public class CustomBlockGenerator {
     }
 
     public int getVeinSize(Random random) {
+        if (veinSizeMax == -1) return veinSizeMin;
         return random.nextInt(veinSizeMax - veinSizeMin + 1) + veinSizeMin;
     }
 
     public int getVeinCount(Random random) {
+        if (veinCountMax == -1) return veinCountMin;
         return random.nextInt(veinCountMax - veinCountMin + 1) + veinCountMin;
     }
 
     public int getDepth(Random random) {
+        if (depthMax == -1) return depthMin;
         return random.nextInt(depthMax - depthMin + 1) + depthMin;
     }
 
@@ -225,7 +228,6 @@ public class CustomBlockGenerator {
         if (!isBiomeAllowed(location.getBlock().getBiome())) return false;
         if (!isBorderingAllowed(location.getBlock(), region)) return false;
         if (!isReplaceable(region.getType(location))) return false;
-        if (slimeChunk && !location.getChunk().isSlimeChunk()) return false;
-        return true;
+        return !slimeChunk || location.getChunk().isSlimeChunk();
     }
 }
