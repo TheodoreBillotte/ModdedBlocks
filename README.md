@@ -9,6 +9,7 @@ A complete lib to easily add persistent data in any kind of blocks and possibili
 - [X] When break a block, it will automatically remove the persistent data
 - [X] Custom block models (159 textures available)
 - [X] Custom block specific properties
+- [X] Generating system for custom blocks 
 
 ## How to use
 ### Add persistent data in any kind of blocks
