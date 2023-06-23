@@ -23,7 +23,7 @@ public class BlockPlaced implements Listener {
         if (container.getKeys().size() == 0)
             return;
         PersistentDataBlockPlaceEvent placeEvent = new PersistentDataBlockPlaceEvent(event);
-//        Bukkit.getPluginManager().callEvent(placeEvent);
+        placeEvent.callEvent();
         if (placeEvent.isCancelled()) event.setCancelled(true);
     }
 
