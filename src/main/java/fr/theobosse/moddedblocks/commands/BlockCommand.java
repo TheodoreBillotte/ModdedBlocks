@@ -1,7 +1,6 @@
 package fr.theobosse.moddedblocks.commands;
 
 import fr.theobosse.moddedblocks.api.blocks.CustomBlock;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,7 +14,6 @@ public class BlockCommand implements CommandExecutor {
         if (!(commandSender instanceof Player)) return false;
         Player player = (Player) commandSender;
 
-        Material material = Material.STONE;
         int model = 1;
         if (strings.length > 0) {
             try {
