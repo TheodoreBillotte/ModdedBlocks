@@ -53,23 +53,6 @@ public class CustomBlock {
         this.generator = new CustomBlockGenerator(section.getConfigurationSection("generation"));
     }
 
-    public CustomBlock(Block block) {
-        YamlConfiguration config = Configs.getConfig("custom-blocks");
-        if (!isMushroomBlock(block)) return;
-        this.blockData = (MultipleFacing) block.getBlockData();
-        this.blockId = calculateBlockId(block);
-        if (blockId == -1 || idCheck[blockId]) {
-            blockId = -1;
-            return;
-        }
-        this.configId = calculateConfigId(blockId);
-        if (configId == -1) return;
-        this.section = config.getConfigurationSection(String.valueOf(configId));
-        customBlocks.add(this);
-        this.data = new CustomBlockData(section, this);
-        this.generator = new CustomBlockGenerator(section.getConfigurationSection("generation"));
-    }
-
     public static void loadCustomBlocks() {
         YamlConfiguration config = Configs.getConfig("custom-blocks");
         for (String key : config.getKeys(false)) {
