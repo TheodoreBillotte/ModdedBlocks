@@ -183,6 +183,28 @@ public class CustomBlockEvents implements Listener {
         event.blockList().removeIf(block -> customBlockExplode(block, event.getBlock().getLocation()));
     }
 
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPush(BlockPistonExtendEvent event) {
+        for (Block block : event.getBlocks()) {
+            CustomBlock customBlock = CustomBlock.getCustomBlock(block);
+            if (customBlock != null && !customBlock.getData().getPreperties().isPushable()) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onRetract(BlockPistonRetractEvent event) {
+        for (Block block : event.getBlocks()) {
+            CustomBlock customBlock = CustomBlock.getCustomBlock(block);
+            if (customBlock != null && !customBlock.getData().getPreperties().isPushable()) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+    }
+
     private boolean customBlockExplode(Block block, Location loc) {
         CustomBlock customBlock = CustomBlock.getCustomBlock(block);
         if (customBlock == null) return false;
