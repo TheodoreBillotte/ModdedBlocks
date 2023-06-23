@@ -38,6 +38,7 @@ public class CustomBlock {
     private static final List<CustomBlock> customBlocks = new ArrayList<>();
 
     private CustomBlockData data = null;
+    private CustomBlockGenerator generator = null;
 
     public CustomBlock(int id) {
         YamlConfiguration config = Configs.getConfig("custom-blocks");
@@ -49,6 +50,7 @@ public class CustomBlock {
         this.blockData = calculateBlockData(blockId);
         customBlocks.add(this);
         this.data = new CustomBlockData(section, this);
+        this.generator = new CustomBlockGenerator(section.getConfigurationSection("generation"));
     }
 
     public CustomBlock(Block block) {
@@ -65,6 +67,7 @@ public class CustomBlock {
         this.section = config.getConfigurationSection(String.valueOf(configId));
         customBlocks.add(this);
         this.data = new CustomBlockData(section, this);
+        this.generator = new CustomBlockGenerator(section.getConfigurationSection("generation"));
     }
 
     public static void loadCustomBlocks() {
@@ -167,6 +170,10 @@ public class CustomBlock {
 
     public CustomBlockData getData() {
         return data;
+    }
+
+    public CustomBlockGenerator getGenerator() {
+        return generator;
     }
 
     public ItemStack getItem() {
