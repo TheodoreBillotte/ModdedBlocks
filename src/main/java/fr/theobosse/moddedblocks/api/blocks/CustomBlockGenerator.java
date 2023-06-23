@@ -1,13 +1,13 @@
 package fr.theobosse.moddedblocks.api.blocks;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.generator.LimitedRegion;
 import org.bukkit.generator.WorldInfo;
 
 import java.util.ArrayList;
@@ -65,7 +65,7 @@ public class CustomBlockGenerator {
                 (s.startsWith("!") ? borderingBlacklist : borderingWhitelist).add(material);
             }
         });
-        section.getStringList("biome").forEach(s -> {
+        section.getStringList("biomes").forEach(s -> {
             Biome biome;
             try {
                 biome = Biome.valueOf(s.toUpperCase());
@@ -76,7 +76,7 @@ public class CustomBlockGenerator {
                 (s.startsWith("!") ? biomeBlacklist : biomeWhitelist).add(biome);
             }
         });
-        section.getStringList("world").forEach(s -> (s.startsWith("!") ? worldBlacklist : worldWhitelist).add(s.replace("!", "")));
+        section.getStringList("worlds").forEach(s -> (s.startsWith("!") ? worldBlacklist : worldWhitelist).add(s.replace("!", "")));
     }
 
     private int[] getRange(String value) {
@@ -181,37 +181,26 @@ public class CustomBlockGenerator {
     }
 
     public boolean isBorderingAllowed(Material material) {
-        System.out.println("OK " + material + " " + borderingBlacklist + " " + borderingWhitelist);
         if (borderingBlacklist.contains(material)) return false;
-        System.out.println("OK2");
         if (borderingWhitelist.isEmpty()) return true;
-        System.out.println("OK3");
         return borderingWhitelist.contains(material);
     }
 
-    public boolean isBorderingAllowed(Block block) {
+    public boolean isBorderingAllowed(Block block, LimitedRegion region) {
         for (BlockFace face : faces) {
-            System.out.println("Face " + face);
             int chunkX = block.getX() % 16;
             int chunkZ = block.getZ() % 16;
             if (chunkX == 0 && face == BlockFace.WEST) continue;
             if (chunkX == 15 && face == BlockFace.EAST) continue;
             if (chunkZ == 0 && face == BlockFace.NORTH) continue;
             if (chunkZ == 15 && face == BlockFace.SOUTH) continue;
-
-            System.out.println("OK cx: " + chunkX + " cz: " + chunkZ);
-            Chunk chunk = block.getRelative(face).getChunk();
-            if (!chunk.isLoaded())
-                continue;
-            System.out.println("Relative " + block.getRelative(face).getType());
-            if (isBorderingAllowed(block.getRelative(face).getType()))
+            if (isBorderingAllowed(region.getType(block.getRelative(face).getLocation())))
                 return true;
         }
         return false;
     }
 
     public boolean isReplaceable(Material material) {
-        System.out.println("OK " + material + " " + replaceable);
         return replaceable.contains(material) || replaceable.isEmpty();
     }
 
@@ -228,23 +217,15 @@ public class CustomBlockGenerator {
     }
 
     public boolean canGenerateInChunk(Random random) {
-        System.out.println(chunkChance);
         return random.nextDouble() <= chunkChance;
     }
 
-    public boolean canGenerateAtLocation(Location location) {
-        Block block = location.getWorld().getBlockAt(location);
-        System.out.println("OK 1");
+    public boolean canGenerateAtLocation(Location location, LimitedRegion region) {
         if (location == null) return false;
-        System.out.println("OK 2");
-        if (!isBiomeAllowed(block.getBiome())) return false;
-        System.out.println("OK 3 " + block.getBiome());
-//        if (!isBorderingAllowed(location.getBlock())) return false;
-        System.out.println("OK 4");
-//        if (!isReplaceable(block.getType())) return false;
-        System.out.println("OK 5");
+        if (!isBiomeAllowed(location.getBlock().getBiome())) return false;
+        if (!isBorderingAllowed(location.getBlock(), region)) return false;
+        if (!isReplaceable(region.getType(location))) return false;
         if (slimeChunk && !location.getChunk().isSlimeChunk()) return false;
-        System.out.println("OK 6");
         return true;
     }
 }
