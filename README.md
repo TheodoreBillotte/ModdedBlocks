@@ -128,12 +128,11 @@ id:
     break-sound: BLOCK_STONE_BREAK
   # Generate the block in the world
   generation:
-    # List of blocks where the block can be generated (add ! before the block to exclude it)
+    # List of blocks where the block can be generated
     # You can find the list of materials here:
     # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
     replace:
       - STONE
-      - !DIRT
     # Spawn chance of the block at each chunk (0.0 to 1.0)
     chunk-chance: 0.7
     # Depth where the block can be generated (-64 to 320)
@@ -147,10 +146,14 @@ id:
     # If the block can be generated in slime chunk only
     slime-chunk-only: true
     # Generate the block in the world only if the biome is in the list (add ! before the biome to exclude it)
+    # You can find the list of biomes here:
+    # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html
     biomes:
       - PLAINS
       - DESERT
     # Generate the block in the world only if the world is in the list (add ! before the world to exclude it)
+    # World names are case sensitive and must be the same as the name in the server.properties file
+    # Default world names are: world, world_nether, world_the_end
     worlds:
       - world
       - !world_nether
