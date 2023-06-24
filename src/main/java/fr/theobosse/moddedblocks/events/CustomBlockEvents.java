@@ -4,6 +4,7 @@ import com.destroystokyo.paper.ParticleBuilder;
 import fr.theobosse.moddedblocks.ModdedBlocks;
 import fr.theobosse.moddedblocks.api.blocks.BlockPersistentData;
 import fr.theobosse.moddedblocks.api.blocks.CustomBlock;
+import fr.theobosse.moddedblocks.api.events.CustomBlockPlaceEvent;
 import fr.theobosse.moddedblocks.api.events.PersistentDataBlockDestroyedEvent;
 import fr.theobosse.moddedblocks.managers.DigManager;
 import org.bukkit.*;
@@ -47,6 +48,15 @@ public class CustomBlockEvents implements Listener {
         CustomBlock customBlock = CustomBlock.getCustomBlock(configId);
         if (customBlock == null) return;
         MultipleFacing blockData = customBlock.getBlockData();
+
+        CustomBlockPlaceEvent placeEvent = new CustomBlockPlaceEvent(block, customBlock, event.getBlockReplacedState(),
+                event.getBlockAgainst(), event.getItemInHand(), event.getPlayer(), event.canBuild(), event.getHand());
+        placeEvent.callEvent();
+        if (placeEvent.isCancelled() || !placeEvent.canBuild()) {
+            event.setCancelled(true);
+            return;
+        }
+
         block.setType(blockData.getMaterial(), false);
         block.setBlockData(blockData, false);
         Map<String, Object> data = customBlock.getData().getData();
