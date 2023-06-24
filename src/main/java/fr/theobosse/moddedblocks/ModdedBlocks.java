@@ -21,7 +21,6 @@ public final class ModdedBlocks extends JavaPlugin {
         Configs.register("custom-blocks");
         Configs.load();
 
-        pm.registerEvents(new BlockListener(), this);
         pm.registerEvents(new BlockPlaced(), this);
         pm.registerEvents(new BlockBreaked(), this);
         pm.registerEvents(new BlockMoved(), this);
