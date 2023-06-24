@@ -4,6 +4,8 @@ import com.destroystokyo.paper.ParticleBuilder;
 import fr.theobosse.moddedblocks.ModdedBlocks;
 import fr.theobosse.moddedblocks.api.blocks.BlockPersistentData;
 import fr.theobosse.moddedblocks.api.blocks.CustomBlock;
+import fr.theobosse.moddedblocks.api.events.CustomBlockBreakEvent;
+import fr.theobosse.moddedblocks.api.events.CustomBlockDropItemEvent;
 import fr.theobosse.moddedblocks.api.events.CustomBlockPlaceEvent;
 import fr.theobosse.moddedblocks.api.events.PersistentDataBlockDestroyedEvent;
 import fr.theobosse.moddedblocks.managers.DigManager;
@@ -13,6 +15,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.MultipleFacing;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ExperienceOrb;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -29,8 +32,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class CustomBlockEvents implements Listener {
 
@@ -105,17 +110,24 @@ public class CustomBlockEvents implements Listener {
         info.removeBreakTime(info.getSpeedModifier());
         info.playBreakAnimation();
         if (info.getBreakTime() <= 0) {
-            PersistentDataBlockDestroyedEvent destroyEvent = new PersistentDataBlockDestroyedEvent(info.getBlock());
-            Bukkit.getPluginManager().callEvent(destroyEvent);
-            if (destroyEvent.isCancelled()) return;
             BlockPersistentData persistent = new BlockPersistentData(info.getBlock());
-            if (persistent.getValues() == null) return;
-            persistent.clear();
+            if (persistent.getValues() != null) {
+                PersistentDataBlockDestroyedEvent destroyEvent = new PersistentDataBlockDestroyedEvent(info.getBlock());
+                destroyEvent.callEvent();
+                if (destroyEvent.isCancelled()) return;
+                persistent.clear();
+            }
+
+            ItemStack item = player.getInventory().getItemInMainHand();
+            int exp = info.getCustomBlock().getData().getExpDrop(item);
+            CustomBlockBreakEvent breakEvent = new CustomBlockBreakEvent(info.getBlock(), info.getCustomBlock(), exp, player);
+            breakEvent.callEvent();
+            if (breakEvent.isCancelled()) return;
+            exp = breakEvent.getExpToDrop();
 
             info.getBlock().setType(Material.AIR, false);
             abortMining(player);
             Location dropLoc = info.getBlock().getLocation().add(0.5, 0.5, 0.5);
-            ItemStack item = player.getInventory().getItemInMainHand();
             BlockData data = info.getCustomBlock().getData().getBreakParticleData();
             new ParticleBuilder(Particle.BLOCK_CRACK).
                     allPlayers().count(50).offset(0.4, 0.4, 0.4).
@@ -123,9 +135,6 @@ public class CustomBlockEvents implements Listener {
                     .spawn();
             player.getWorld().playSound(info.getBlock().getLocation(), info.getCustomBlock().getData().getBreakSound(), 5, 1);
             if (!info.getCustomBlock().getData().isValidTool(item)) return;
-            for (ItemStack drop : info.getCustomBlock().getData().getDrops(item))
-                info.getBlock().getWorld().dropItemNaturally(dropLoc, drop);
-            int exp = info.getCustomBlock().getData().getExpDrop(item);
             if (exp > 0)
                 info.getBlock().getWorld().spawn(dropLoc, ExperienceOrb.class).setExperience(exp);
             ItemMeta meta = item.getItemMeta();
@@ -135,6 +144,14 @@ public class CustomBlockEvents implements Listener {
                     damageable.setDamage(damageable.getDamage() + 1);
                     item.setItemMeta(meta);
                 }
+            }
+            List<ItemStack> drops = info.getCustomBlock().getData().getDrops(item);
+            if (drops.size() > 0 && breakEvent.isDropItems()) {
+                List<Item> items = drops.stream().map(drop -> info.getBlock().getWorld().dropItemNaturally(dropLoc, drop)).collect(Collectors.toList());
+                CustomBlockDropItemEvent dropEvent = new CustomBlockDropItemEvent(info.getBlock(), player, items, info.getCustomBlock());
+                dropEvent.callEvent();
+                if (dropEvent.isCancelled())
+                    dropEvent.getItems().forEach(Item::remove);
             }
         }
     }
