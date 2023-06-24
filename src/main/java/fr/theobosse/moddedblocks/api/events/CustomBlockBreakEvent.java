@@ -4,7 +4,6 @@ import fr.theobosse.moddedblocks.api.blocks.CustomBlock;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class CustomBlockBreakEvent extends CustomBlockExpEvent implements Cancellable {
@@ -33,7 +32,6 @@ public class CustomBlockBreakEvent extends CustomBlockExpEvent implements Cancel
     /**
      * Sets whether or not the block will attempt to drop items as it normally
      * would.
-     *
      * If and only if this is false then {@link CustomBlockDropItemEvent} will not be
      * called after this event.
      *

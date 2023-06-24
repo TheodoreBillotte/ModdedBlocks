@@ -2,7 +2,6 @@ package fr.theobosse.moddedblocks.api.events;
 
 import fr.theobosse.moddedblocks.api.blocks.CustomBlock;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -13,12 +12,9 @@ import java.util.List;
 
 /**
  * Called if a custom block broken by a player drops an item.
- *
  * If the block break is cancelled, this event won't be called.
- *
  * If isDropItems in CustomBlockBreakEvent is set to false, this event won't be
  * called.
- *
  * The Block is already broken as this event is called, so #getBlock() will be
  * AIR in most cases. Use #getBlockState() for more Information about the broken
  * block.
@@ -48,7 +44,6 @@ public class CustomBlockDropItemEvent extends CustomBlockEvent implements Cancel
 
     /**
      * Gets list of the Item drops caused by the block break.
-     *
      * This list is mutable - removing an item from it will cause it to not
      * drop. Adding to the list is allowed.
      *

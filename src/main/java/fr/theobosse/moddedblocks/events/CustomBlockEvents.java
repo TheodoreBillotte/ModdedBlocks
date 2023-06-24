@@ -167,9 +167,7 @@ public class CustomBlockEvents implements Listener {
                 tempDiggers.put(player, info);
                 player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 5, Integer.MAX_VALUE, false, false, false));
-                Bukkit.getScheduler().runTaskLater(ModdedBlocks.getInstance(), () -> {
-                    tempDiggers.remove(player);
-                }, 5);
+                Bukkit.getScheduler().runTaskLater(ModdedBlocks.getInstance(), () -> tempDiggers.remove(player), 5);
             }
         }
         event.setCancelled(true);
@@ -185,12 +183,12 @@ public class CustomBlockEvents implements Listener {
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event) {
-        event.blockList().removeIf(block -> customBlockExplode(block, event.getLocation()));
+        event.blockList().removeIf(this::customBlockExplode);
     }
 
     @EventHandler
     public void onBlockExplode(BlockExplodeEvent event) {
-        event.blockList().removeIf(block -> customBlockExplode(block, event.getBlock().getLocation()));
+        event.blockList().removeIf(this::customBlockExplode);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -215,7 +213,7 @@ public class CustomBlockEvents implements Listener {
         }
     }
 
-    private boolean customBlockExplode(Block block, Location loc) {
+    private boolean customBlockExplode(Block block) {
         CustomBlock customBlock = CustomBlock.getCustomBlock(block);
         if (customBlock == null) return false;
         block.setType(Material.AIR, false);
