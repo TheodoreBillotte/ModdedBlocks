@@ -129,8 +129,7 @@ public class CustomBlockEvents implements Listener {
             if (exp > 0)
                 info.getBlock().getWorld().spawn(dropLoc, ExperienceOrb.class).setExperience(exp);
             ItemMeta meta = item.getItemMeta();
-            if (meta instanceof Damageable) {
-                Damageable damageable = (Damageable) meta;
+            if (meta instanceof Damageable damageable) {
                 Random random = new Random();
                 if (random.nextInt(100) < 100 / (meta.getEnchantLevel(Enchantment.DURABILITY) + 1)) {
                     damageable.setDamage(damageable.getDamage() + 1);
