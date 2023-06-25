@@ -42,5 +42,5 @@
     worlds:
       - world
     bordering:
-        - STONE
-        - DIRT
+      - STONE
+      - DIRT

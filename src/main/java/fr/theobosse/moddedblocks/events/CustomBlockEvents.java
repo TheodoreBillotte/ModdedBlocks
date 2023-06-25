@@ -1,6 +1,5 @@
 package fr.theobosse.moddedblocks.events;
 
-import com.destroystokyo.paper.ParticleBuilder;
 import fr.theobosse.moddedblocks.ModdedBlocks;
 import fr.theobosse.moddedblocks.api.blocks.BlockPersistentData;
 import fr.theobosse.moddedblocks.api.blocks.CustomBlock;
@@ -56,7 +55,7 @@ public class CustomBlockEvents implements Listener {
 
         CustomBlockPlaceEvent placeEvent = new CustomBlockPlaceEvent(block, customBlock, event.getBlockReplacedState(),
                 event.getBlockAgainst(), event.getItemInHand(), event.getPlayer(), event.canBuild(), event.getHand());
-        placeEvent.callEvent();
+        Bukkit.getPluginManager().callEvent(placeEvent);
         if (placeEvent.isCancelled() || !placeEvent.canBuild()) {
             event.setCancelled(true);
             return;
@@ -113,7 +112,7 @@ public class CustomBlockEvents implements Listener {
             BlockPersistentData persistent = new BlockPersistentData(info.getBlock());
             if (persistent.getValues() != null) {
                 PersistentDataBlockDestroyedEvent destroyEvent = new PersistentDataBlockDestroyedEvent(info.getBlock());
-                destroyEvent.callEvent();
+                Bukkit.getPluginManager().callEvent(destroyEvent);
                 if (destroyEvent.isCancelled()) return;
                 persistent.clear();
             }
@@ -121,7 +120,7 @@ public class CustomBlockEvents implements Listener {
             ItemStack item = player.getInventory().getItemInMainHand();
             int exp = info.getCustomBlock().getData().getExpDrop(item);
             CustomBlockBreakEvent breakEvent = new CustomBlockBreakEvent(info.getBlock(), info.getCustomBlock(), exp, player);
-            breakEvent.callEvent();
+            Bukkit.getPluginManager().callEvent(breakEvent);
             if (breakEvent.isCancelled()) return;
             exp = breakEvent.getExpToDrop();
 
@@ -129,10 +128,7 @@ public class CustomBlockEvents implements Listener {
             abortMining(player);
             Location dropLoc = info.getBlock().getLocation().add(0.5, 0.5, 0.5);
             BlockData data = info.getCustomBlock().getData().getBreakParticleData();
-            new ParticleBuilder(Particle.BLOCK_CRACK).
-                    allPlayers().count(50).offset(0.4, 0.4, 0.4).
-                    extra(0.5).location(dropLoc).data(data)
-                    .spawn();
+            player.getWorld().spawnParticle(Particle.BLOCK_CRACK, dropLoc, 50, 0.4, 0.4, 0.4, 0.5, data);
             player.getWorld().playSound(info.getBlock().getLocation(), info.getCustomBlock().getData().getBreakSound(), 5, 1);
             if (!info.getCustomBlock().getData().isValidTool(item)) return;
             if (exp > 0)
@@ -149,7 +145,7 @@ public class CustomBlockEvents implements Listener {
             if (drops.size() > 0 && breakEvent.isDropItems()) {
                 List<Item> items = drops.stream().map(drop -> info.getBlock().getWorld().dropItemNaturally(dropLoc, drop)).collect(Collectors.toList());
                 CustomBlockDropItemEvent dropEvent = new CustomBlockDropItemEvent(info.getBlock(), player, items, info.getCustomBlock());
-                dropEvent.callEvent();
+                Bukkit.getPluginManager().callEvent(dropEvent);
                 if (dropEvent.isCancelled())
                     dropEvent.getItems().forEach(Item::remove);
             }

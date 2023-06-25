@@ -1,5 +1,6 @@
 package fr.theobosse.moddedblocks.world;
 
+import fr.theobosse.moddedblocks.ModdedBlocks;
 import fr.theobosse.moddedblocks.api.blocks.CustomBlock;
 import fr.theobosse.moddedblocks.api.blocks.CustomBlockGenerator;
 import org.bukkit.Location;
@@ -18,7 +19,8 @@ public class ModdedBlockPopulator extends BlockPopulator {
 
     @Override
     public void populate(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ, @NotNull LimitedRegion limitedRegion) {
-        final World world = limitedRegion.getWorld();
+        final World world = ModdedBlocks.getInstance().getServer().getWorld(worldInfo.getName());
+        if (world == null) return;
         CustomBlock.getCustomBlocks().stream().
                 filter(block -> block.getGenerator().isWorldAllowed(worldInfo.getName()))
                 .filter(block -> block.getGenerator().canGenerateInChunk(random))

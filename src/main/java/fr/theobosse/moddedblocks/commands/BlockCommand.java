@@ -11,21 +11,20 @@ public class BlockCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        if (!(commandSender instanceof Player)) return false;
-        Player player = (Player) commandSender;
+        if (!(commandSender instanceof Player player)) return false;
 
         int model = 1;
         if (strings.length > 0) {
             try {
                 model = Integer.parseInt(strings[0]);
             } catch (IllegalArgumentException e) {
-                player.sendPlainMessage("§cInvalid number");
+                player.sendMessage("§cInvalid number");
                 return false;
             }
         }
         CustomBlock block = CustomBlock.getCustomBlock(model);
         if (block == null) {
-            player.sendPlainMessage("§cUnknown Id");
+            player.sendMessage("§cUnknown Id");
             return false;
         }
         player.getInventory().addItem(block.getItem());

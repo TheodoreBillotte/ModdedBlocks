@@ -2,6 +2,7 @@ package fr.theobosse.moddedblocks.events;
 
 import fr.theobosse.moddedblocks.api.blocks.BlockPersistentData;
 import fr.theobosse.moddedblocks.api.events.PersistentDataBlockPlaceEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,13 +18,14 @@ public class BlockPlaced implements Listener {
         Block block = event.getBlock();
         ItemStack item = event.getItemInHand();
         ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
         PersistentDataContainer container = meta.getPersistentDataContainer();
         BlockPersistentData data = new BlockPersistentData(block);
         data.addPersistentDataContainer(container);
         if (container.getKeys().size() == 0)
             return;
         PersistentDataBlockPlaceEvent placeEvent = new PersistentDataBlockPlaceEvent(event);
-        placeEvent.callEvent();
+        Bukkit.getPluginManager().callEvent(placeEvent);
         if (placeEvent.isCancelled()) event.setCancelled(true);
     }
 

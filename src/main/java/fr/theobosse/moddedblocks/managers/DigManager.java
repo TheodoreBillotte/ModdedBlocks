@@ -1,10 +1,9 @@
 package fr.theobosse.moddedblocks.managers;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.wrappers.BlockPosition;
 import fr.theobosse.moddedblocks.api.blocks.CustomBlock;
+import net.minecraft.core.BlockPosition;
+import net.minecraft.network.protocol.game.PacketPlayOutBlockBreakAnimation;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
@@ -45,7 +44,6 @@ public class DigManager {
         private final Player player;
         private final int animId;
         private final ItemStack tool;
-        private final boolean isValidTool;
         private double breakTime;
         private final double initialBreakTime;
         private int prevState = -1;
@@ -55,7 +53,6 @@ public class DigManager {
             this.customBlock = customBlock;
             this.tool = player.getInventory().getItemInMainHand();
             this.breakTime = customBlock.getData().getBreakTime(tool);
-            this.isValidTool = customBlock.getData().isValidTool(tool, false);
             this.initialBreakTime = breakTime;
             this.miningFatigue = player.getPotionEffect(PotionEffectType.SLOW_DIGGING);
             this.player = player;
@@ -76,6 +73,10 @@ public class DigManager {
 
         public double getInitialBreakTime() {
             return initialBreakTime;
+        }
+
+        public ItemStack getTool() {
+            return tool;
         }
 
         public void setBreakTime(double breakTime) {
@@ -113,12 +114,9 @@ public class DigManager {
 
         public void playBreakAnimation(int animState) {
             if (animState == prevState) return;
-            PacketContainer packet = new PacketContainer(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
-            packet.getIntegers().write(0, animId);
-            packet.getBlockPositionModifier().write(0, new BlockPosition(block.getLocation().toVector()));
-            packet.getIntegers().write(1, animState);
+            PacketPlayOutBlockBreakAnimation packet = new PacketPlayOutBlockBreakAnimation(animId, new BlockPosition(block.getX(), block.getY(), block.getZ()), animState);
             for (Player p : player.getWorld().getPlayers())
-                ProtocolLibrary.getProtocolManager().sendServerPacket(p, packet);
+                new PacketManager(p).sendPacket(packet);
             prevState = animState;
         }
 
@@ -129,7 +127,7 @@ public class DigManager {
             PotionEffect haste = player.getPotionEffect(PotionEffectType.FAST_DIGGING);
             if (haste != null)
                 speedModifier *= 0.2 * (haste.getAmplifier() + 1) + 1;
-            if (player.isUnderWater() && !hasAquaAffinity())
+            if (player.getLocation().clone().add(0, 1, 0).getBlock().getType() == Material.WATER && !hasAquaAffinity())
                 speedModifier /= 5;
             if (!player.isOnGround())
                 speedModifier /= 5;
@@ -153,62 +151,28 @@ public class DigManager {
 
         public static ToolType getToolType(ItemStack item) {
             if (item == null) return OTHER;
-            switch (item.getType()) {
-                case DIAMOND_PICKAXE:
-                case GOLDEN_PICKAXE:
-                case IRON_PICKAXE:
-                case STONE_PICKAXE:
-                case WOODEN_PICKAXE:
-                    return PICKAXE;
-                case DIAMOND_AXE:
-                case GOLDEN_AXE:
-                case IRON_AXE:
-                case STONE_AXE:
-                case WOODEN_AXE:
-                    return AXE;
-                case DIAMOND_SHOVEL:
-                case GOLDEN_SHOVEL:
-                case IRON_SHOVEL:
-                case STONE_SHOVEL:
-                case WOODEN_SHOVEL:
-                    return SHOVEL;
-                case DIAMOND_HOE:
-                case GOLDEN_HOE:
-                case IRON_HOE:
-                case STONE_HOE:
-                case WOODEN_HOE:
-                    return HOE;
-                case DIAMOND_SWORD:
-                case GOLDEN_SWORD:
-                case IRON_SWORD:
-                case STONE_SWORD:
-                case WOODEN_SWORD:
-                    return SWORD;
-                case SHEARS:
-                    return SHEARS;
-                default:
-                    return OTHER;
-            }
+            return switch (item.getType()) {
+                case DIAMOND_PICKAXE, GOLDEN_PICKAXE, IRON_PICKAXE, STONE_PICKAXE, WOODEN_PICKAXE -> PICKAXE;
+                case DIAMOND_AXE, GOLDEN_AXE, IRON_AXE, STONE_AXE, WOODEN_AXE -> AXE;
+                case DIAMOND_SHOVEL, GOLDEN_SHOVEL, IRON_SHOVEL, STONE_SHOVEL, WOODEN_SHOVEL -> SHOVEL;
+                case DIAMOND_HOE, GOLDEN_HOE, IRON_HOE, STONE_HOE, WOODEN_HOE -> HOE;
+                case DIAMOND_SWORD, GOLDEN_SWORD, IRON_SWORD, STONE_SWORD, WOODEN_SWORD -> SWORD;
+                case SHEARS -> SHEARS;
+                default -> OTHER;
+            };
         }
 
         public static ToolType getToolType(String type) {
             if (type == null) return OTHER;
-            switch (type) {
-                case "PICKAXE":
-                    return PICKAXE;
-                case "AXE":
-                    return AXE;
-                case "SHOVEL":
-                    return SHOVEL;
-                case "HOE":
-                    return HOE;
-                case "SWORD":
-                    return SWORD;
-                case "SHEARS":
-                    return SHEARS;
-                default:
-                    return OTHER;
-            }
+            return switch (type) {
+                case "PICKAXE" -> PICKAXE;
+                case "AXE" -> AXE;
+                case "SHOVEL" -> SHOVEL;
+                case "HOE" -> HOE;
+                case "SWORD" -> SWORD;
+                case "SHEARS" -> SHEARS;
+                default -> OTHER;
+            };
         }
 
         public static boolean isTool(ItemStack item) {
@@ -243,46 +207,15 @@ public class DigManager {
 
         public static ToolMaterial getToolMaterial(ItemStack item) {
             if (item == null) return OTHER;
-            switch (item.getType()) {
-                case NETHERITE_PICKAXE:
-                case NETHERITE_AXE:
-                case NETHERITE_SHOVEL:
-                case NETHERITE_HOE:
-                case NETHERITE_SWORD:
-                    return NETHERITE;
-                case DIAMOND_PICKAXE:
-                case DIAMOND_AXE:
-                case DIAMOND_SHOVEL:
-                case DIAMOND_HOE:
-                case DIAMOND_SWORD:
-                    return DIAMOND;
-                case GOLDEN_PICKAXE:
-                case GOLDEN_AXE:
-                case GOLDEN_SHOVEL:
-                case GOLDEN_HOE:
-                case GOLDEN_SWORD:
-                    return GOLD;
-                case IRON_PICKAXE:
-                case IRON_AXE:
-                case IRON_SHOVEL:
-                case IRON_HOE:
-                case IRON_SWORD:
-                    return IRON;
-                case STONE_PICKAXE:
-                case STONE_AXE:
-                case STONE_SHOVEL:
-                case STONE_HOE:
-                case STONE_SWORD:
-                    return STONE;
-                case WOODEN_PICKAXE:
-                case WOODEN_AXE:
-                case WOODEN_SHOVEL:
-                case WOODEN_HOE:
-                case WOODEN_SWORD:
-                    return WOOD;
-                default:
-                    return OTHER;
-            }
+            return switch (item.getType()) {
+                case NETHERITE_PICKAXE, NETHERITE_AXE, NETHERITE_SHOVEL, NETHERITE_HOE, NETHERITE_SWORD -> NETHERITE;
+                case DIAMOND_PICKAXE, DIAMOND_AXE, DIAMOND_SHOVEL, DIAMOND_HOE, DIAMOND_SWORD -> DIAMOND;
+                case GOLDEN_PICKAXE, GOLDEN_AXE, GOLDEN_SHOVEL, GOLDEN_HOE, GOLDEN_SWORD -> GOLD;
+                case IRON_PICKAXE, IRON_AXE, IRON_SHOVEL, IRON_HOE, IRON_SWORD -> IRON;
+                case STONE_PICKAXE, STONE_AXE, STONE_SHOVEL, STONE_HOE, STONE_SWORD -> STONE;
+                case WOODEN_PICKAXE, WOODEN_AXE, WOODEN_SHOVEL, WOODEN_HOE, WOODEN_SWORD -> WOOD;
+                default -> OTHER;
+            };
         }
     }
 }

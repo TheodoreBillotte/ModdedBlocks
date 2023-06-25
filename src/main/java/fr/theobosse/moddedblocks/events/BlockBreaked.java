@@ -1,6 +1,5 @@
 package fr.theobosse.moddedblocks.events;
 
-import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import fr.theobosse.moddedblocks.api.blocks.BlockPersistentData;
 import fr.theobosse.moddedblocks.api.events.PersistentDataBlockDestroyedEvent;
 import org.bukkit.Bukkit;
@@ -41,12 +40,6 @@ public class BlockBreaked implements Listener {
 
     @EventHandler
     public void onBlockBurned(BlockBurnEvent event) {
-        Block block = event.getBlock();
-        destroyBlockFunction(block, event);
-    }
-
-    @EventHandler
-    public void onBlockDestroyed(BlockDestroyEvent event) {
         Block block = event.getBlock();
         destroyBlockFunction(block, event);
     }

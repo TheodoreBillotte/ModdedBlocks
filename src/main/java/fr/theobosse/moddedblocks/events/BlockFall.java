@@ -3,6 +3,7 @@ package fr.theobosse.moddedblocks.events;
 import fr.theobosse.moddedblocks.api.blocks.BlockPersistentData;
 import fr.theobosse.moddedblocks.api.events.PersistentDataBlockFeltEvent;
 import fr.theobosse.moddedblocks.api.events.PersistentDataBlockStartFallingEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -21,27 +22,27 @@ public class BlockFall implements Listener {
     @EventHandler
     public void onBlockFall(EntitySpawnEvent event) {
         Entity entity = event.getEntity();
-        if (!(entity instanceof FallingBlock)) return;
-        FallingBlock fb = (FallingBlock) entity;
+        if (!(entity instanceof FallingBlock fb)) return;
         Block block = fb.getLocation().getBlock();
         BlockPersistentData data = new BlockPersistentData(block);
         if (data.getValues() == null) return;
         FALLING_BLOCKS_VALUES.put(fb.getUniqueId(), new FallingBlockValues(data.getValues(), block.getLocation()));
         data.clear();
-        new PersistentDataBlockStartFallingEvent(block, fb).callEvent();
+        PersistentDataBlockStartFallingEvent fallEvent = new PersistentDataBlockStartFallingEvent(block, fb);
+        Bukkit.getPluginManager().callEvent(fallEvent);
     }
 
     @EventHandler
     public void onEntityChangeBlock(EntityChangeBlockEvent event) {
-        if (!(event.getEntity() instanceof FallingBlock)) return;
-        FallingBlock fb = (FallingBlock) event.getEntity();
+        if (!(event.getEntity() instanceof FallingBlock fb)) return;
         if (!FALLING_BLOCKS_VALUES.containsKey(fb.getUniqueId())) return;
         FallingBlockValues bf = FALLING_BLOCKS_VALUES.get(fb.getUniqueId());
         if (bf == null || bf.getValues() == null || bf.getLocation() == null) return;
         BlockPersistentData data = new BlockPersistentData(event.getBlock());
         data.setValues(bf.getValues());
         FALLING_BLOCKS_VALUES.remove(fb.getUniqueId());
-        new PersistentDataBlockFeltEvent(event.getBlock(), fb, bf.getLocation()).callEvent();
+        PersistentDataBlockFeltEvent feltEvent = new PersistentDataBlockFeltEvent(event.getBlock(), fb, bf.getLocation());
+        Bukkit.getPluginManager().callEvent(feltEvent);
     }
 
     private static class FallingBlockValues {
