@@ -1,16 +1,24 @@
 package fr.theobosse.moddedblocks.managers;
 
 import fr.theobosse.moddedblocks.ModdedBlocks;
+import fr.theobosse.moddedblocks.tools.Reflection;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.network.PlayerConnection;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.lang.reflect.Method;
+import java.util.Hashtable;
 
 public class PacketManager {
 
+    private static final Hashtable<OfflinePlayer, PacketManager> packetManagers = new Hashtable<>();
     private final Player player;
     private final Object playerConnection;
-    private final Method sendPacketMethod;
+    private final Reflection.MethodInvoker sendPacketMethod;
     private final String nmsVersion;
 
     public PacketManager(Player player) {
@@ -18,6 +26,7 @@ public class PacketManager {
         this.playerConnection = getPlayerConnection();
         this.sendPacketMethod = getSendPacketMethod();
         this.nmsVersion = getNMSVersion();
+        packetManagers.put(player, this);
     }
 
     private String getNMSVersion(){
@@ -27,17 +36,17 @@ public class PacketManager {
 
     private Object getPlayerConnection() {
         try {
-            Object handleClass = player.getClass().getMethod("getHandle").invoke(player);
-            return handleClass.getClass().getField("playerConnection").get(handleClass);
+            Object handleClass = Reflection.getMethod(player.getClass(), "getHandle").invoke(player);
+            return Reflection.getField(handleClass.getClass(), PlayerConnection.class, 0).get(handleClass);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    private Method getSendPacketMethod() {
+    private Reflection.MethodInvoker getSendPacketMethod() {
         try {
-            return playerConnection.getClass().getMethod("sendPacket");
+            return Reflection.getMethodByParameters(playerConnection.getClass(), 0, Packet.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -59,6 +68,27 @@ public class PacketManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void sendPacket(Player player, Packet<?> packet) {
+        PacketManager packetManager = packetManagers.get(player);
+        if (packetManager == null)
+            packetManager = new PacketManager(player);
+        packetManager.sendPacket(packet);
+    }
+
+    public static class ConnectionEvents implements Listener {
+
+        @EventHandler
+        public final void onPlayerJoin(PlayerJoinEvent event) {
+            new PacketManager(event.getPlayer());
+        }
+
+        @EventHandler
+        public final void onPlayerQuit(PlayerQuitEvent event) {
+            packetManagers.remove(event.getPlayer());
+        }
+
     }
 
 }

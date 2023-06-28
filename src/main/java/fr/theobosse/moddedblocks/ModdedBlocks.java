@@ -3,6 +3,7 @@ package fr.theobosse.moddedblocks;
 import fr.theobosse.moddedblocks.api.blocks.CustomBlock;
 import fr.theobosse.moddedblocks.commands.BlockCommand;
 import fr.theobosse.moddedblocks.events.*;
+import fr.theobosse.moddedblocks.managers.PacketManager;
 import fr.theobosse.moddedblocks.tools.Configs;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,6 +28,7 @@ public final class ModdedBlocks extends JavaPlugin {
         pm.registerEvents(new BlockFall(), this);
         pm.registerEvents(new CustomBlockEvents(), this);
         pm.registerEvents(new GeneratorEvents(), this);
+        pm.registerEvents(new PacketManager.ConnectionEvents(), this);
 
         Objects.requireNonNull(getCommand("block")).setExecutor(new BlockCommand());
 

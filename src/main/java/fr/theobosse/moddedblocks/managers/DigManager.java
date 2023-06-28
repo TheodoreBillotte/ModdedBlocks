@@ -116,7 +116,7 @@ public class DigManager {
             if (animState == prevState) return;
             PacketPlayOutBlockBreakAnimation packet = new PacketPlayOutBlockBreakAnimation(animId, new BlockPosition(block.getX(), block.getY(), block.getZ()), animState);
             for (Player p : player.getWorld().getPlayers())
-                new PacketManager(p).sendPacket(packet);
+                PacketManager.sendPacket(p, packet);
             prevState = animState;
         }
 
