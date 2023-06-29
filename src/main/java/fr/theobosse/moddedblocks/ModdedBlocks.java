@@ -38,10 +38,14 @@ public final class ModdedBlocks extends JavaPlugin {
             try {
                 model = Integer.parseInt(itemId);
             } catch (NumberFormatException e) {
+                getLogger().severe("Invalid number of model id: " + itemId);
                 return null;
             }
             CustomBlock data = CustomBlock.getCustomBlock(model);
-            if (data == null) return null;
+            if (data == null) {
+                getLogger().severe("Unknown model id: " + model);
+                return null;
+            }
             return data.asItemStack();
         });
     }
