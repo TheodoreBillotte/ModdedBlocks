@@ -170,10 +170,24 @@ public class CustomBlockData {
                 amount = Integer.parseInt(values[0]);
             } else amount = Integer.parseInt(loot);
 
-            Material material = Material.getMaterial(key);
-            for (int i = 0; i < amount * rolls; i++)
-                if (random.nextInt(100) < chance && material != null)
-                    items.add(new ItemStack(material));
+            int dropAmount = 0;
+            for (int i = 0; i < rolls; i++)
+                if (random.nextInt(100) < chance)
+                    dropAmount += amount;
+
+            if (key.contains(":")) {
+                String[] values = key.split(":");
+                String pluginId = values[0];
+                String id = values[1];
+                ItemStack item = CustomBlock.getRegisteredItem(pluginId, id);
+                if (item == null) continue;
+                item.setAmount(dropAmount);
+                items.add(item);
+            } else {
+                Material material = Material.getMaterial(key);
+                if (material == null) continue;
+                items.add(new ItemStack(material, dropAmount));
+            }
         }
         return items;
     }
@@ -194,7 +208,7 @@ public class CustomBlockData {
         if (!validTool && preperties.isLootNeedTool()) return new ArrayList<>();
         if (!validTool) return getDrops();
         if (preperties.isSilkTouchable() && tool.containsEnchantment(org.bukkit.enchantments.Enchantment.SILK_TOUCH))
-            return Collections.singletonList(customBlock.getItem());
+            return Collections.singletonList(customBlock.asItemStack());
         if (!preperties.isFortunate()) return getDrops();
         int rolls = 1;
         int looting = tool.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.LOOT_BONUS_BLOCKS);
