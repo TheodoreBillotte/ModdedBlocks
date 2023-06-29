@@ -12,12 +12,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Random;
 
 public class DigManager {
 
-    private static final Hashtable<OfflinePlayer, CustomBlockInfo> diggers = new Hashtable<>();
+    private static final HashMap<OfflinePlayer, CustomBlockInfo> diggers = new HashMap<>();
 
     public static void addDigger(Player player, Block block, CustomBlock customBlock) {
         CustomBlockInfo info = new CustomBlockInfo(player, block, customBlock);

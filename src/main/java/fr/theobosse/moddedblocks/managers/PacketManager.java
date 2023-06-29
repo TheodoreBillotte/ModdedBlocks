@@ -11,11 +11,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 
 public class PacketManager {
 
-    private static final Hashtable<OfflinePlayer, PacketManager> packetManagers = new Hashtable<>();
+    private static final HashMap<OfflinePlayer, PacketManager> packetManagers = new HashMap<>();
     private final Player player;
     private final Object playerConnection;
     private final Reflection.MethodInvoker sendPacketMethod;
