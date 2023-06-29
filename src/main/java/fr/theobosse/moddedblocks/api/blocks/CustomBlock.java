@@ -253,6 +253,7 @@ public class CustomBlock {
     public ItemStack asItemStack() {
         ItemStack item = new ItemStack(Material.STONE);
         ItemMeta meta = item.getItemMeta();
+        if (meta == null) return item;
         meta.setDisplayName(data.getName());
         meta.setLore(data.getLore());
         meta.setCustomModelData(1000 + configId);
