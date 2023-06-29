@@ -30,7 +30,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 
 public class CustomBlockEvents implements Listener {
 
-    private final Hashtable<OfflinePlayer, DigManager.CustomBlockInfo> tempDiggers = new Hashtable<>();
+    private final HashMap<OfflinePlayer, DigManager.CustomBlockInfo> tempDiggers = new HashMap<>();
 
 
     @EventHandler
@@ -126,29 +126,33 @@ public class CustomBlockEvents implements Listener {
 
             info.getBlock().setType(Material.AIR, false);
             abortMining(player);
-            Location dropLoc = info.getBlock().getLocation().add(0.5, 0.5, 0.5);
-            BlockData data = info.getCustomBlock().getData().getBreakParticleData();
-            player.getWorld().spawnParticle(Particle.BLOCK_CRACK, dropLoc, 50, 0.4, 0.4, 0.4, 0.5, data);
-            player.getWorld().playSound(info.getBlock().getLocation(), info.getCustomBlock().getData().getBreakSound(), 5, 1);
-            if (!info.getCustomBlock().getData().isValidTool(item)) return;
-            if (exp > 0)
-                info.getBlock().getWorld().spawn(dropLoc, ExperienceOrb.class).setExperience(exp);
-            ItemMeta meta = item.getItemMeta();
-            if (meta instanceof Damageable damageable) {
-                Random random = new Random();
-                if (random.nextInt(100) < 100 / (meta.getEnchantLevel(Enchantment.DURABILITY) + 1)) {
-                    damageable.setDamage(damageable.getDamage() + 1);
-                    item.setItemMeta(meta);
-                }
+            customBlockBreak(player, info, item, exp, breakEvent.isDropItems());
+        }
+    }
+
+    private void customBlockBreak(Player player, DigManager.CustomBlockInfo info, ItemStack item, int exp, boolean canDrop) {
+        Location dropLoc = info.getBlock().getLocation().add(0.5, 0.5, 0.5);
+        BlockData data = info.getCustomBlock().getData().getBreakParticleData();
+        player.getWorld().spawnParticle(Particle.BLOCK_CRACK, dropLoc, 50, 0.4, 0.4, 0.4, 0.5, data);
+        player.getWorld().playSound(info.getBlock().getLocation(), info.getCustomBlock().getData().getBreakSound(), 5, 1);
+        if (!info.getCustomBlock().getData().isValidTool(item)) return;
+        if (exp > 0)
+            info.getBlock().getWorld().spawn(dropLoc, ExperienceOrb.class).setExperience(exp);
+        ItemMeta meta = item.getItemMeta();
+        if (meta instanceof Damageable damageable) {
+            Random random = new Random();
+            if (random.nextInt(100) < 100 / (meta.getEnchantLevel(Enchantment.DURABILITY) + 1)) {
+                damageable.setDamage(damageable.getDamage() + 1);
+                item.setItemMeta(meta);
             }
-            List<ItemStack> drops = info.getCustomBlock().getData().getDrops(item);
-            if (drops.size() > 0 && breakEvent.isDropItems()) {
-                List<Item> items = drops.stream().map(drop -> info.getBlock().getWorld().dropItemNaturally(dropLoc, drop)).collect(Collectors.toList());
-                CustomBlockDropItemEvent dropEvent = new CustomBlockDropItemEvent(info.getBlock(), player, items, info.getCustomBlock());
-                Bukkit.getPluginManager().callEvent(dropEvent);
-                if (dropEvent.isCancelled())
-                    dropEvent.getItems().forEach(Item::remove);
-            }
+        }
+        List<ItemStack> drops = info.getCustomBlock().getData().getDrops(item);
+        if (drops.size() > 0 && canDrop) {
+            List<Item> items = drops.stream().map(drop -> info.getBlock().getWorld().dropItemNaturally(dropLoc, drop)).collect(Collectors.toList());
+            CustomBlockDropItemEvent dropEvent = new CustomBlockDropItemEvent(info.getBlock(), player, items, info.getCustomBlock());
+            Bukkit.getPluginManager().callEvent(dropEvent);
+            if (dropEvent.isCancelled())
+                dropEvent.getItems().forEach(Item::remove);
         }
     }
 
