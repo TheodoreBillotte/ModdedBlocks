@@ -27,7 +27,7 @@ public class BlockCommand implements CommandExecutor {
             player.sendMessage("§cUnknown Id");
             return false;
         }
-        player.getInventory().addItem(block.getItem());
+        player.getInventory().addItem(block.asItemStack());
         return true;
     }
 
