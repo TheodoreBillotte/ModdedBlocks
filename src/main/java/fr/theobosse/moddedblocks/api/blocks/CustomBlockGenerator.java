@@ -41,7 +41,6 @@ public class CustomBlockGenerator {
             veinCountMax = 0;
             chunkChance = 0;
             slimeChunk = false;
-            System.out.println("CustomBlockGenerator: section is null");
             return;
         }
         int[] range = getRange(section.getString("depth", "0"));

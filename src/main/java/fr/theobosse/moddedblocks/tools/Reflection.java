@@ -332,7 +332,7 @@ public final class Reflection {
      * This is useful when looking up fields by a NMS or OBC type.
      * <p>
      *
-     * @see {@link #getClass()} for more information.
+     * @see Reflection#getClass() for more information.
      * @param lookupName - the class name with variables.
      * @return The class.
      */
@@ -348,7 +348,7 @@ public final class Reflection {
      * This is useful when looking up fields by a NMS or OBC type.
      * <p>
      *
-     * @see {@link #getClass()} for more information.
+     * @see Reflection#getClass() for more information.
      * @param lookupName - the class name with variables.
      * @param aliases - alternative names for this class.
      * @return The class.

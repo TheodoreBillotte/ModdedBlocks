@@ -50,9 +50,9 @@ public class BlockPersistentData {
     }
 
     /**
+     * set a value to the block persistent data
      * @param fieldName key name for the value
      * @param value     value as an object
-     * @see #set(String, Object) set a value
      */
     public void set(String fieldName, Object value) {
         config.set(blockId + "." + fieldName, value);
@@ -60,8 +60,8 @@ public class BlockPersistentData {
     }
 
     /**
+     * set all values at once to the block persistent data
      * @param values a map of key names and values
-     * @see #setValues(Map) set all values at once
      */
     public void setValues(Map<String, Object> values) {
         values.forEach((key, value) -> config.set(blockId + "." + key, value));
@@ -69,8 +69,8 @@ public class BlockPersistentData {
     }
 
     /**
+     * add a persistent data container to the block persistent data
      * @param container a persistent data container to add to the block persistent data
-     * @see #addPersistentDataContainer(PersistentDataContainer) add a persistent data container to the block persistent data
      */
     public void addPersistentDataContainer(PersistentDataContainer container) {
         container.getKeys().forEach(key -> {
@@ -168,8 +168,8 @@ public class BlockPersistentData {
     }
 
     /**
+     * remove a value from the block persistent data
      * @param fieldName key name for the value
-     * @see #remove(String) remove a value from the block persistent data
      */
     public void remove(String fieldName) {
         if (!contains(fieldName)) return;
@@ -178,7 +178,7 @@ public class BlockPersistentData {
     }
 
     /**
-     * @see #clear() clear all values from the block persistent data
+     * clear all values from the block persistent data
      */
     public void clear() {
         config.set(blockId, null);
@@ -186,8 +186,8 @@ public class BlockPersistentData {
     }
 
     /**
+     * copy all values from another block persistent data
      * @param data the block persistent data to copy from
-     * @see #copyFrom(BlockPersistentData) copy all values from another block persistent data
      */
     public void copyFrom(BlockPersistentData data) {
         Map<String, Object> values = data.getValues();
