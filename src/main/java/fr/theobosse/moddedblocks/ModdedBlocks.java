@@ -1,10 +1,12 @@
 package fr.theobosse.moddedblocks;
 
 import fr.theobosse.moddedblocks.api.blocks.CustomBlock;
+import fr.theobosse.moddedblocks.api.blocks.CustomBlockItemRegister;
 import fr.theobosse.moddedblocks.commands.BlockCommand;
 import fr.theobosse.moddedblocks.events.*;
 import fr.theobosse.moddedblocks.managers.PacketManager;
 import fr.theobosse.moddedblocks.tools.Configs;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -33,6 +35,17 @@ public final class ModdedBlocks extends JavaPlugin {
         Objects.requireNonNull(getCommand("block")).setExecutor(new BlockCommand());
 
         CustomBlock.loadCustomBlocks();
+        CustomBlock.registerItem("custom_block", itemId -> {
+            int model;
+            try {
+                model = Integer.parseInt(itemId);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+            CustomBlock data = CustomBlock.getCustomBlock(model);
+            if (data == null) return null;
+            return data.asItemStack();
+        });
     }
 
     public static ModdedBlocks getInstance() {

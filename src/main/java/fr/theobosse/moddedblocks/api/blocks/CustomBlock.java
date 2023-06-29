@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -45,10 +46,12 @@ public class CustomBlock {
         false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true,
     };
 
-    private static final List<CustomBlock> customBlocks = new ArrayList<>();
-
     private CustomBlockData data = null;
     private CustomBlockGenerator generator = null;
+
+    private static final List<CustomBlock> customBlocks = new ArrayList<>();
+
+    private static final HashMap<String, CustomBlockItemRegister> itemRegisters = new HashMap<>();
 
     public CustomBlock(int id) {
         YamlConfiguration config = Configs.getConfig("custom-blocks");
@@ -64,7 +67,7 @@ public class CustomBlock {
     }
 
     /**
-     * @see CustomBlock#loadCustomBlocks() load all custom blocks from the config
+     * load all custom blocks from the config
      */
     public static void loadCustomBlocks() {
         YamlConfiguration config = Configs.getConfig("custom-blocks");
@@ -74,7 +77,7 @@ public class CustomBlock {
     }
 
     /**
-     * @see CustomBlock#calculateBlockId(int) calculate the block id from the config id
+     * calculate the block id from the config id
      */
     public static int calculateBlockId(int configId) {
         int blockId = 0;
@@ -87,7 +90,7 @@ public class CustomBlock {
     }
 
     /**
-     * @see CustomBlock#calculateConfigId(int) calculate the config id from the block id
+     * calculate the config id from the block id
      */
     public static int calculateConfigId(int blockId) {
         int configId = 0;
@@ -99,7 +102,30 @@ public class CustomBlock {
     }
 
     /**
-     * @see CustomBlock#calculateBlockData(int) calculate the block data from the block id
+     * register a custom block drop item
+     */
+    public static void registerItem(String name, CustomBlockItemRegister register) {
+        itemRegisters.put(name, register);
+    }
+
+    /**
+     * unregister a custom block drop item
+     */
+    public static void unregisterItem(String name) {
+        itemRegisters.remove(name);
+    }
+
+    /**
+     * get the custom block drop item
+     */
+    public static ItemStack getRegisteredItem(String pluginId, String itemId) {
+        CustomBlockItemRegister register = itemRegisters.get(pluginId);
+        if (register == null) return null;
+        return register.getItemStack(itemId);
+    }
+
+    /**
+     * calculate the block data from the block id
      */
     public static MultipleFacing calculateBlockData(int blockId) {
         Material material = blockId < 64 ? Material.BROWN_MUSHROOM_BLOCK : blockId < 128 ? Material.RED_MUSHROOM_BLOCK : Material.MUSHROOM_STEM;
@@ -112,7 +138,7 @@ public class CustomBlock {
     }
 
     /**
-     * @see CustomBlock#calculateBlockId(Block) calculate the block id from the block
+     * calculate the block id from the block
      */
     public static int calculateBlockId(Block block) {
         if (!isMushroomBlock(block)) return -1;
@@ -128,7 +154,7 @@ public class CustomBlock {
     }
 
     /**
-     * @see CustomBlock#isMushroomBlock(Block) check if the block is a mushroom block
+     * check if the block is a mushroom block
      */
     public static boolean isMushroomBlock(@NotNull Block block) {
         return block.getType().equals(Material.BROWN_MUSHROOM_BLOCK) ||
@@ -137,14 +163,14 @@ public class CustomBlock {
     }
 
     /**
-     * @see CustomBlock#getCustomBlocks() get a list of all custom blocks
+     * get a list of all custom blocks
      */
     public static List<CustomBlock> getCustomBlocks() {
         return customBlocks;
     }
 
     /**
-     * @see CustomBlock#getCustomBlock(Block) get a custom block from a block
+     * get a custom block from a block
      */
     public static @Nullable CustomBlock getCustomBlock(Block block) {
         for (CustomBlock customBlock : customBlocks) {
@@ -154,7 +180,7 @@ public class CustomBlock {
     }
 
     /**
-     * @see CustomBlock#getCustomBlock(int) get a custom block from a config id
+     * get a custom block from a config id
      */
     @Contract(pure = true)
     public static @Nullable CustomBlock getCustomBlock(int id) {
@@ -165,7 +191,7 @@ public class CustomBlock {
     }
 
     /**
-     * @see CustomBlock#isCustomBlock(Block) check if the block is a custom block using an optimized way
+     * check if the block is a custom block using an optimized way
      */
     public static boolean isCustomBlock(Block block) {
         int id = calculateBlockId(block);
@@ -173,58 +199,58 @@ public class CustomBlock {
     }
 
     /**
-     * @see CustomBlock#getIdCheck() get the id check array
+     * get the id check array
      */
     public static boolean[] getIdCheck() {
         return idCheck;
     }
 
     /**
-     * @see CustomBlock#getSection() get the config section of the custom block
+     * get the config section of the custom block
      */
     public ConfigurationSection getSection() {
         return section;
     }
 
     /**
-     * @see CustomBlock#getBlockData() get the block data of the custom block
+     * get the block data of the custom block
      */
     public MultipleFacing getBlockData() {
         return blockData;
     }
 
     /**
-     * @see CustomBlock#getBlockId() get the block id of the custom block
+     * get the block id of the custom block
      */
     public int getBlockId() {
         return blockId;
     }
 
     /**
-     * @see CustomBlock#getConfigId() get the config id of the custom block
+     * get the config id of the custom block
      */
     public int getConfigId() {
         return configId;
     }
 
     /**
-     * @see CustomBlock#getData() get the custom block data of the custom block
+     * get the custom block data of the custom block
      */
     public CustomBlockData getData() {
         return data;
     }
 
     /**
-     * @see CustomBlock#getGenerator() get the custom block generator of the custom block
+     * get the custom block generator of the custom block
      */
     public CustomBlockGenerator getGenerator() {
         return generator;
     }
 
     /**
-     * @see CustomBlock#getItem() get the item of the custom block
+     * get the item of the custom block
      */
-    public ItemStack getItem() {
+    public ItemStack asItemStack() {
         ItemStack item = new ItemStack(Material.STONE);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(data.getName());
