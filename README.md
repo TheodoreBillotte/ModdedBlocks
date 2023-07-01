@@ -100,7 +100,7 @@ id:
   properties:
     # If the block is unbreakable
     breakable: false
-    # If the block is pushable by piston (not working for now)
+    # If the block is pushable by piston
     pushable: true
     # If the block is affected by gravity (not working for now)
     gravity: true
